@@ -100,7 +100,7 @@ If you find our paper/code useful, please cite us and give your ⭐!
   title        = {RepreGuard: Detecting LLM-Generated Text by Revealing Hidden Representation Patterns},
   journal      = {Transactions of the Association for Computational Linguistics},
   year         = {2025},
-  url          = {https://github.com/NLP2CT/RepreGuard},
+  url          = {https://arxiv.org/abs/2508.13152},
   note         = {Accepted at TACL 2025}
 }
 ```

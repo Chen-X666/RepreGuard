@@ -99,27 +99,18 @@ class RepReadingPipeline(Pipeline):
 
 
     def _batched_string_to_hiddens(self, train_inputs, rep_token, hidden_layers, batch_size, which_hidden_states, train_labels, **tokenizer_args):
-        # Wrapper method to get a dictionary hidden states from a list of strings
-        # hidden_states_outputs = self(train_inputs, rep_token=rep_token,
-        #     hidden_layers=hidden_layers, batch_size=batch_size, rep_reader=None, which_hidden_states=which_hidden_states, **tokenizer_args)
-        # hidden_states = {layer: [] for layer in hidden_layers}
-        # for hidden_states_batch in hidden_states_outputs:
-        #     for layer in hidden_states_batch:
-        #         hidden_states[layer].extend(hidden_states_batch[layer])
-                
-        # return {k: np.vstack(v) for k, v in hidden_states.items()}
+
         def batchify(data, batch_size):
             for i in range(0, len(data), batch_size):
                 yield data[i:i + batch_size]
     
-        # 初始化隐藏状态存储
+
         hidden_states = {layer: [] for layer in hidden_layers}
     
-        # 遍历每一批数据
         for batch_inputs in tqdm(batchify(train_inputs, batch_size), desc="Processing hidden states batches",total = (len(train_inputs) + batch_size - 1) // batch_size):
-            # 每次处理一个小批次的输入
+
             hidden_states_batch = self(
-                batch_inputs,  # 传入小批次数据
+                batch_inputs,  # 
                 rep_token=rep_token,
                 hidden_layers=hidden_layers,
                 batch_size=batch_size,
@@ -128,14 +119,11 @@ class RepReadingPipeline(Pipeline):
                 **tokenizer_args
             )
     
-            # 遍历每个批次中的字典
             for batch in hidden_states_batch:
                 for layer in hidden_layers:
-                    # 确保每一层的数据被正确添加到结果中
                     if layer in batch:
                         hidden_states[layer].append(batch[layer].detach().cpu().numpy())
     
-        # 将隐藏状态拼接为 numpy 数组
         return {k: np.vstack(v) for k, v in hidden_states.items()}
     
     def _validate_params(self, n_difference, direction_method):
@@ -176,8 +164,7 @@ class RepReadingPipeline(Pipeline):
 		# if relevant, get the hidden state data for training set
         hidden_states = None
         relative_hidden_states = None
-        # print(f"AI Weight: {ai_weight}")
-        # print(f"Human Weight: {human_weight}")
+
         if direction_finder.needs_hiddens:
             # get raw hidden states for the train inputs
             hidden_states = self._batched_string_to_hiddens(train_inputs, rep_token, hidden_layers, batch_size, which_hidden_states, train_labels, **tokenizer_args)
@@ -190,7 +177,6 @@ class RepReadingPipeline(Pipeline):
                     relative_hidden_states[layer] = (ai_weight * relative_hidden_states[layer][::2]) - (human_weight * relative_hidden_states[layer][1::2])
 
 		# get the directions
-        # 为每一层进行pca降维， 包括recenter，包括每一层的pca降维后的值
         direction_finder.directions = direction_finder.get_rep_directions(
             self.model, self.tokenizer, relative_hidden_states, hidden_layers,
             train_choices=train_labels)

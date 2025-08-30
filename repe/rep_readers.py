@@ -90,14 +90,10 @@ class RepReader(ABC):
                 for component_index in range(self.n_components):
                     transformed_hidden_states = project_onto_direction(hidden_states[layer], self.directions[layer][component_index])
                     projected_scores = [transformed_hidden_states[i:i+2] for i in range(0, len(transformed_hidden_states), 2)]
-                    # 2个pairs4个samples的结果 -->> [torch.tensor([0.0295, 0.0182]), torch.tensor([-0.0162,  0.0167])]
-                    # labels = [[True, False], [False, True]]
-                    # 比较每个pair（pos,neg）的结果 如果min（pos,neg） == labels是True的那个也就是pos那个，那么就是1，否则是0，也就是如果这个神经元投影后min的值等于pos则1，否则是0，这是什么逻辑呢 ？ 这是因为我们认为pos的结果是高的，所以我们认为min是pos的结果是对的，所以是1，否则是0
-                    # 所以这里其实是统计pos是小的有多少个sample 是高的有多少，如果高的多，那么就是1，否则是-1
     
                     outputs_min = [1 if min(o) == o[label] else 0 for o, label in zip(projected_scores, train_choices)]
                     outputs_max = [1 if max(o) == o[label] else 0 for o, label in zip(projected_scores, train_choices)]
-                    # 也就是说如果投影后是pos是大的，那么就是1，否则是-1
+
                     signs[layer].append(-1 if np.mean(outputs_min) > np.mean(outputs_max) else 1)
         else:
             for layer in hidden_layers:    
@@ -131,14 +127,7 @@ class RepReader(ABC):
             # project hidden states onto found concept directions (e.g. onto PCA comp 0) 
             H_transformed = project_onto_direction(layer_hidden_states, self.directions[layer][component_index])
             transformed_hidden_states[layer] = H_transformed.cpu().numpy()
-        # import reprlib
-        # # print(reprlib.repr(transformed_hidden_states.shape))
-        # print(len(transformed_hidden_states)) # 11
-        # print(len(transformed_hidden_states[-1])) # 8
-        # print(len(transformed_hidden_states[-1][0]))
-        # print(len(transformed_hidden_states[-1][0][0]))
-        # print(reprlib.repr(transformed_hidden_states.shape))
-        # layers * samples
+
         return transformed_hidden_states
 
 class PCARepReader(RepReader):
@@ -192,18 +181,6 @@ class PCARepReader(RepReader):
 
                 transformed_hidden_states = project_onto_direction(layer_hidden_states, self.directions[layer][component_index])
                 
-            #     pca_outputs_comp = [list(islice(transformed_hidden_states, sum(len(c) for c in train_labels[:i]), sum(len(c) for c in train_labels[:i+1]))) for i in range(len(train_labels))]
-
-            #     # We do elements instead of argmin/max because sometimes we pad random choices in training
-            #     pca_outputs_min = np.mean([o[train_labels[i].index(1)] == min(o) for i, o in enumerate(pca_outputs_comp)])
-            #     pca_outputs_max = np.mean([o[train_labels[i].index(1)] == max(o) for i, o in enumerate(pca_outputs_comp)])
-
-       
-            #     layer_signs[component_index] = np.sign(np.mean(pca_outputs_max) - np.mean(pca_outputs_min))
-            #     if layer_signs[component_index] == 0:
-            #         layer_signs[component_index] = 1 # default to positive in case of tie
-
-            # signs[layer] = layer_signs
                 pca_outputs_comp = [
                 transformed_hidden_states[
                     sum(len(c) for c in train_labels[:i]):sum(len(c) for c in train_labels[:i + 1])
@@ -211,7 +188,7 @@ class PCARepReader(RepReader):
                     for i in range(len(train_labels))
                 ]
     
-                # 使用 GPU 计算 pca_outputs_min 和 pca_outputs_max
+                # pca_outputs_min and pca_outputs_max
                 pca_outputs_min = torch.tensor([
                     (o[train_labels[i].index(1)] == torch.min(o)).item()
                     for i, o in enumerate(pca_outputs_comp)
@@ -222,12 +199,11 @@ class PCARepReader(RepReader):
                     for i, o in enumerate(pca_outputs_comp)
                 ], device='cuda').float().mean()
     
-                # 计算 sign，并在 GPU 上完成操作
+
                 layer_signs[component_index] = torch.sign(torch.mean(pca_outputs_max) - torch.mean(pca_outputs_min))
                 if layer_signs[component_index] == 0:
-                    layer_signs[component_index] = 1  # 默认正值
+                    layer_signs[component_index] = 1  # 
     
-            # 将 layer_signs 保存到 signs 字典中
             signs[layer] = layer_signs
 
         return signs

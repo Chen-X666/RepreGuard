@@ -12,7 +12,7 @@ from sklearn.metrics import (
 from transformers import (
     AutoTokenizer, AutoModelForCausalLM, PreTrainedTokenizer, pipeline, set_seed
 )
-from baselines.Detectors.metrics import get_roc_by_threshold,get_roc_metrics
+from metrics import get_roc_by_threshold,get_roc_metrics
 import argparse
 from repe import repe_pipeline_registry
 repe_pipeline_registry()

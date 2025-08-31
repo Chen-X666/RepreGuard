@@ -4,7 +4,7 @@ from repreGuard_detector import AIHumanFunctionModel
 import numpy as np
 import logging
 import json
-from baselines.Detectors.metrics import get_roc_by_threshold,get_roc_metrics
+from metrics import get_roc_by_threshold,get_roc_metrics
 import os
 import random
 from collections import defaultdict

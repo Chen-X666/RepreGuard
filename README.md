@@ -20,7 +20,7 @@ This repository provides the official implementation of **RepreGuard**, a robust
 
 ## 📣 News
 
-- **[2025.09.01]** 🔥 Our work has been notified that it will be presented at *EMNLP 2025*. Looking forward to an insightful discussion at the conference!
+- **[2025.09.01]** 🔥 Our work has been notified that will be presented at *EMNLP 2025*. Looking forward to an insightful discussion at the conference! See you in Suzhou, China!
 - **[2025.08.01]** 🎉 Our paper is accepted by *Transactions of the Association for Computational Linguistics (TACL 2025)*!
 
 ---

@@ -220,10 +220,10 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="LLM Hidden State Extraction and Visualization")
     parser.add_argument("--model_path", type=str, 
-                        default="/data/shared/models/meta-llama/Llama-2-7b-hf",
+                        default="meta-llama/Llama-2-7b-hf",
                         help="Path to the pretrained model")
     parser.add_argument("--data_path", type=str, 
-                        default="/data/home/chenxin/RepreGuard/datasets/detectrl_dataset/main_dataset/detectrl_train_dataset_llm_type_mix_llms_interleaved.json",
+                        default="datasets/detectrl_dataset/main_dataset/detectrl_train_dataset_llm_type_mix_llms_interleaved.json",
                         help="Path to the dataset JSON file")
     parser.add_argument("--sample_size", type=int, default=1000, 
                         help="Number of samples to use for each category (Human/LLM)")

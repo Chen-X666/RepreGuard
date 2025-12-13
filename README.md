@@ -56,6 +56,12 @@ conda activate repre_guard
 pip install -r requirements.txt
 ```
 
+### Representation Analysis
+
+```bash
+python3 vis/repre_vis.py 
+```
+
 ### Running RepreGuard
 
 ```bash

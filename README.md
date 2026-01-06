@@ -25,10 +25,10 @@ This repository provides the official implementation of **RepreGuard**, a robust
 
 ---
 ## 🧐 Motivation 
-We observed that the hidden representation patterns of the two types of texts show distinct differences, which serve as a strong signal for detecting LGT.
-<img src="vis/Neural_Activity.png" width="1000px">
+<img src="image/Neural_Activity.png" width="1000px">
+We observed that the hidden representation patterns of the two types of texts show distinct differences, which serve as higher-dimensional features and strong signals for detecting LGT.  
 
-## 🧐 Overview
+## 🎯 Overview
 
 <img src="image/RepreGuard.png" width="1000px">
 

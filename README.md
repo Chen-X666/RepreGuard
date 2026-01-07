@@ -62,7 +62,13 @@ pip install -r requirements.txt
 ### Representation Analysis
 
 ```bash
-python3 vis/repre_vis.py 
+python3 vis/repre_vis.py \
+  --model_path meta-llama/Llama-2-7b-hf \
+  --data_path datasets/detectrl_dataset/main_dataset/detectrl_train_dataset_llm_type_mix_llms_interleaved.json \
+  --sample_size 1000 \
+  --truncate_len 210 \
+  --batch_size 1 \
+  --save_plot_name Neural_Activity.pdf
 ```
 
 ### Running RepreGuard
